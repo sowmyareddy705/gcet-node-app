@@ -15,6 +15,17 @@ app.get("/name",(req,res)=>{res.send("Praveen")})
 
 app.get("/weather",(req,res)=>{res.send("31degree")})
 
+app.get("/product",(req,res)=>{
+  const products =[
+    { name: "Product 1", price: 34},
+    { name: "Product 2", price: 64},
+    { name: "Product 3", price: 44},
+  ];
+  res.json(products);
+  
+})
+
+
 // import express from "express";
 // import cors from "cors";
 // const app = express();
