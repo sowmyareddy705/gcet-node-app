@@ -5,12 +5,42 @@ import cors from "cors";
 const app = express();
 
 app.listen(8080, () => {
-  console.log("Server Started");
+    mongoose.connect("mongodb://localhost:27017/gcet");
+  console.log("Server Started on port 8080");
 });
 
+const userSchema = mongoose.Schema({
+  name: { type: String },
+  email: { type: String },
+  pass: { type: String },
+})
+
+const user = mongoose.model("User", userSchema);
+
+const productSchema = mongoose.Schema({
+  name: { type: String },
+  price: { type: Number},
+});
+const product =mongoose.model("Product", productSchema);
+
 app.use(cors())
-app.get("/", (req, res) => {
+app.use(express.json())
+app.get("/", async (req, res) => {
   return res.send("Good Morning");
+});
+
+
+app.post("/register", async(req, res)=>{
+    const {name, email, pass } = req.body;
+    const result = await user.insertOne({name, email, pass});
+    return res.json(result);
+})
+
+app.post("/login" , async (req, res) => {
+  const { email, pass } = req.body;
+  const result = await user.findOne({ email, pass });
+  if (!result) return res.json({message: "IN=nvalid user or password"})
+    return res.json(result);
 });
 
 app.get("/greet",(req,res)=>{res.send("Greetings")})
@@ -19,15 +49,6 @@ app.get("/name",(req,res)=>{res.send("sowmya reddy")})
 
 app.get("/weather",(req,res)=>{res.send("31degree")})
 
-app.get("/product",(req,res)=>{
-  const products =[
-    { name: "Product 1", price: 34},
-    { name: "Product 2", price: 64},
-    { name: "Product 3", price: 44},
-  ];
-  res.json(products);
-  
-})
 
 
 // import express from "express";
