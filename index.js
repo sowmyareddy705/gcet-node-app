@@ -1,86 +1,51 @@
 import express from "express";
+import mongoose from "mongoose";
 import cors from "cors";
 
+import userRouter from "./routes/userRoutes.js";
+import productRouter from "./routes/productRoutes.js";
+import orderRouter from "./routes/orderRoutes.js";
+
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
-const users = [];
+app.use("/users", userRouter);
 
-app.get("/", (req, res) => {
-  return res.json(users);
-});
+app.use("/products", productRouter);
 
-
-app.get("/products", (req, res) => {
-  const products = [
-    { id: 1, name: "Laptop", price: 999 },
-    { id: 2, name: "Phone", price: 499 },
-    { id: 3, name: "Headphones", price: 199 }
-  ];
-  
-  return res.json(products);
-});
-
-app.post("/register", (req, res, next) => {
-  try {
-    console.log("Register request body:", req.body);
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    users.push({ name, email, password });
-    return res.json({ message: "User registered successfully" });
-  } catch (err) {
-    next(err); 
-  }
-});
-
-
-app.post("/login", (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const found = users.find(
-      (value) => value.email === email && value.password === password
-    );
-    if (!found) {
-      return res.status(401).json({ message: "User not found" });
-    }
-    return res.json({ ...found, token: "123" });
-  } catch (err) {
-    next(err);
-  }
-});
-
+app.use("/orders", orderRouter);
 
 app.listen(8080, () => {
-  console.log("Server Started on port 8080");
+  mongoose.connect("mongodb://localhost:27017/gcet");
+  console.log("Server Started");
 });
 
 
+/**app.get("/", (req, res)=>{
+  return res.send(`<h1>Welcome to the API Index</h1>
+    <ol>
+      <li><a href="/greet">/greet</a></li>
+      <li><a href="/name">/name</a></li>
+      <li><a href="/weather">/weather</a></li>
+      <li><a href="/products">/products</a></li>
+      <li><a href="/register">/register</a></li>
+      <li><a href="/login">/login</a></li>
+    </ol>
+  `);
+   res.send("Good Morning!!");
+});
 
-// import express from "express";
-// import cors from "cors";
+app.get("/greet", (req, res)=>{
+  res.send("Greetings!!");
+} );
 
-// const app = express();
-// app.use(cors()); 
-// app.use(express.json());
+app.get("/name", (req, res)=>{
+  res.send("Shreeya");
+} );
 
-// app.get("/", (req, res) => {
-//   return res.send("Hello");
-// });
+app.get("/weather", (req, res)=>{
+  res.send("29 degrees");
+});
 
-// app.get("/weather", (req, res) => {
-//   return res.send("28"); 
-// });
-
-// app.listen(8080, () => {
-//   console.log("Server Started on port 8080");
-// });
-
-
-// app.get("/home", (req, res) => {
-//   return res.send(""); 
-// });
+**/
