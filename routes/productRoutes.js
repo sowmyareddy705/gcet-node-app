@@ -15,7 +15,7 @@ productRouter.get('/', async (req, res) => {
 productRouter.post("/add", async (req, res) => {
   try {
     const { name, description, imgUrl, price } = req.body;
-    const newProduct = new productModel({ name, description, imgUrl, price });
+    const newProduct = new productModel({ name, description, price });
     const result = await newProduct.save();
     return res.json(result);
   } catch (error) {
