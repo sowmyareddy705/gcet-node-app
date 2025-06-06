@@ -5,7 +5,8 @@ const userRouter = express.Router()
 
 userRouter.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
-  const result = await userModel.insertOne({ name: name, email: email, password: password });
+  const hashpassword = await bcrypt.hash(password, 10);
+  const result = await userModel.insertOne({ name: name, email: email, password: hashpassword });
   return res.json(result);
 });
 
